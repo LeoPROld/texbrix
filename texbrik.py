@@ -1,45 +1,47 @@
-!python3
+#!python3
 
-from pathlib import path
+from pathlib import Path
 import re
 
+NAMEPAT = re.compile(r'\\brik{(?P<name>[\w\W]+?)}')
+PREREQS = re.compile(r'\\prerequisite{(\w+?)}')
+INCLS = re.compile(r'\\include{(\w+?)}')
+BRIKCONTENT = re.compile(r'\\begin{content}(?P<content>[\w\W]*?)\\end{content}')
+ 
 class Texbrik:
-    name
-    packages
-    references
-    content
+    def __init__(self, name, prerequisites, includes, content):
+        self.name = name
+        self.prerequisites = prerequisites
+        self.includes = includes
+        self.content = content
 
-    def __init__(self, pathstr):
-        self.name = pathstr
-        self.packages = {}
-        self.references = []
-        s = Path(pathstr).open(mode='r').readData()
-        // references to other brix
-        match = re.findall(r'\\\\ref{(?P<reference>\w+?)}\n', s)
-        if match:
-            refs = match.group('reference')
-            self.__add_refs(refs)
 
-        // imports
-        match = re.findall(r'\\\\usepackage{(?P<package>\w+?)}\n', s)
-        if match:
-            ps = match.group('package')
-            self.packages += set(ps_)
+def brikFromDoc(pathstr):
+    s = Path(pathstr).read_text()
 
-        // content of brik
-        match = re.search(r'\\\\begin{brik}(?P<content>*?)\\\\end{brik}', s)
-        if match
-            self.content = mathc.group('content')
-        
-        //TODO makros
+    n = NAMEPAT.findall(s)
+    if len(n) is not 1:
+        raise InputError(pathstr, 'none or too many names')
+    
+    c = BRIKCONTENT.findall(s)
+    if len(c) is not 1:
+        raise InputError(pathstr, 'none or too many content blocks')
 
-    def __add_refs(self, refs):
-        for r in refs:
-            if r in [b.name for b in self.references]:
-                continue
-            refbrik = Texbrik(r)
-            for r1 in refbrik.references:
-                if r1.name not in [b.name for b in self.references]:
-                    self.references.append(r1)
-            self.references.append(refbrik)
+    return Texbrik(
+        name            = n[0],
+        prerequisites   = PREREQS.findall(s),
+        includes        = INCLS.findall(s),
+        content         = c[0]
+    )
 
+class InputError(Exception):
+    """Exception raised for errors on the input.
+
+    Attributes:
+    expression: input expression in which the error occured
+    message: explanation of the error
+    """
+
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message

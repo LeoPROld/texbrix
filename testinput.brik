@@ -1,0 +1,11 @@
+\brik{testinput1}
+\prerequisite{a}
+\prerequisite{b}
+\include{amsmath}
+\include{amssymb}
+\begin{content}
+ Some content with Backslashes
+	\begin{align*}
+		a=b+c
+	\end{align*}
+\end{content}
