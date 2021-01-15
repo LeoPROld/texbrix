@@ -1,0 +1,1 @@
+from texbrik import brikFromDoc
