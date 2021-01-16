@@ -1,0 +1,11 @@
+\brik{testinput2}
+\prerequisite{dir3/testinput3}{t3}
+\include{amsmath}
+\include{amssymb}
+\begin{content}
+ Some content with Backslashes
+	\begin{align*}
+		a=b+c
+	\end{align*}
+ \brikinsert{t3}
+\end{content}

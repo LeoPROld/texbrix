@@ -4,9 +4,9 @@ from pathlib import Path
 import re
 
 NAMEPAT = re.compile(r'\\brik{(?P<name>[\w\W]+?)}')
-PREREQS = re.compile(r'\\prerequisite{(\w+?)}')
+PREREQS = re.compile(r'\\prerequisite{(?P<relativpath>\w+?)}{(?P<as>\w+?)}')
 INCLS = re.compile(r'\\include{(\w+?)}')
-BRIKCONTENT = re.compile(r'\\begin{content}(?P<content>[\w\W]*?)\\end{content}')
+BRIKCONTENT = re.compile(r'\\begin{content}([\w\W]*?)\\end{content}')
  
 class Texbrik:
     def __init__(self, name, prerequisites, includes, content):
@@ -15,16 +15,19 @@ class Texbrik:
         self.includes = includes
         self.content = content
 
+#    def expand(self):
+        #TODO
 
-def brikFromDoc(pathstr):
-    s = Path(pathstr).read_text()
+
+def brikFromDoc(path):
+    s = path.read_text()
 
     n = NAMEPAT.findall(s)
-    if len(n) is not 1:
-        raise InputError(pathstr, 'none or too many names')
+    if len(n) != 1:
+        raise InputError(str(path), 'none or too many names')
     
     c = BRIKCONTENT.findall(s)
-    if len(c) is not 1:
+    if len(c) != 1:
         raise InputError(pathstr, 'none or too many content blocks')
 
     return Texbrik(

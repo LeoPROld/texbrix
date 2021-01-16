@@ -1,9 +1,12 @@
 #!python3
 
-import texbrik
 import unittest
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent.joinpath('src')))
+import texbrik
 
-testdoc = "testinput.brik"
+testdoc = Path(__file__).resolve().parent.joinpath('input_files/testinput1.brik')
 tb = texbrik.brikFromDoc(testdoc)
 
 class TestTexBrik(unittest.TestCase):
@@ -12,7 +15,7 @@ class TestTexBrik(unittest.TestCase):
         self.assertEqual(tb.name, 'testinput1')
 
     def test_prerequs(self):
-        self.assertEqual(tb.prerequisites, ['a', 'b'])
+        self.assertEqual(tb.prerequisites, [('testinput2', 't2')])
 
     def test_includes(self):
         self.assertEqual(tb.includes, ['amsmath', 'amssymb'])

@@ -1,10 +1,12 @@
 \brik{testinput1}
-\prerequisite{a}
-\prerequisite{b}
+\prerequisite{testinput2}{t2}
 \include{amsmath}
 \include{amssymb}
 \begin{content}
  Some content with Backslashes
+
+ \brikinsert{t2}
+
 	\begin{align*}
 		a=b+c
 	\end{align*}
