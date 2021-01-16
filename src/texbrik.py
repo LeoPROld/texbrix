@@ -3,38 +3,54 @@
 from pathlib import Path
 import re
 
-NAMEPAT = re.compile(r'\\brik{(?P<name>[\w\W]+?)}')
-PREREQS = re.compile(r'\\prerequisite{(?P<relativpath>\w+?)}{(?P<as>\w+?)}')
+PREREQS = re.compile(r'\\brikinsert{(?P<relativepath>[/_\w]+?)}')
 INCLS = re.compile(r'\\include{(\w+?)}')
 BRIKCONTENT = re.compile(r'\\begin{content}([\w\W]*?)\\end{content}')
  
 class Texbrik:
-    def __init__(self, name, prerequisites, includes, content):
-        self.name = name
-        self.prerequisites = prerequisites
-        self.includes = includes
+    def __init__(self, prerequisites, includes, content, root_dir):
+        self.root_dir = root_dir
+        self.includes = set(includes)
         self.content = content
+        self.prerequisites = dict([
+                (p, brikFromDoc(root_dir.joinpath(p).with_suffix('.brik'), self.root_dir))
+                for p in prerequisites
+            ])
+        self.expanded = False
 
-#    def expand(self):
-        #TODO
+    def expand(self):
+        if self.expanded:
+            return
 
+        for p in self.prerequisites.values():
+            p.expand()
+            self.includes = self.includes.union(p.includes)
+        self.content = PREREQS.sub((lambda m: self.prerequisites[m[1]].expanded_content()), self.content)
 
-def brikFromDoc(path):
+        self.expanded = True
+
+    def expanded_content(self):
+        self.expand()
+        return self.content
+
+def brikFromDoc(path, root_dir):
+
+    if not root_dir.is_dir():
+        raise NotADirectoryError('specified project root_dir is not a directory')
+    if not (path.is_file() and path.suffix == '.brik'):
+        path = path.relative_to(root_dir)
+        raise InputError(str(path), '{brik} is not a TeXBriK'.format(brik=str(path)))
     s = path.read_text()
 
-    n = NAMEPAT.findall(s)
-    if len(n) != 1:
-        raise InputError(str(path), 'none or too many names')
-    
     c = BRIKCONTENT.findall(s)
     if len(c) != 1:
         raise InputError(pathstr, 'none or too many content blocks')
 
     return Texbrik(
-        name            = n[0],
         prerequisites   = PREREQS.findall(s),
         includes        = INCLS.findall(s),
-        content         = c[0]
+        content         = c[0],
+        root_dir        = root_dir
     )
 
 class InputError(Exception):

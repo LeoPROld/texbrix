@@ -1,1 +1,1 @@
-from texbrik import brikFromDoc
+from src.texbrik import *

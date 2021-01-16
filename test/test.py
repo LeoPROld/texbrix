@@ -7,21 +7,33 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.joinpath('src')))
 import texbrik
 
 testdoc = Path(__file__).resolve().parent.joinpath('input_files/testinput1.brik')
-tb = texbrik.brikFromDoc(testdoc)
 
 class TestTexBrik(unittest.TestCase):
 
-    def test_name(self):
-        self.assertEqual(tb.name, 'testinput1')
-
     def test_prerequs(self):
-        self.assertEqual(tb.prerequisites, [('testinput2', 't2')])
+        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        self.assertIn('testinput2', tb.prerequisites.keys())
 
     def test_includes(self):
-        self.assertEqual(tb.includes, ['amsmath', 'amssymb'])
+        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        self.assertEqual({'amssymb'}, tb.includes)
 
     def test_content(self):
+        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        print(tb.content)
         self.assertTrue(tb.content)
+
+    def test_expand_includes(self):
+        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        tb.expand()
+        self.assertNotEqual(tb.includes - {'amssymb'}, {})
+
+    def test_expand_content(self):
+        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        tb.expand()
+        print(tb.content)
+        self.assertNotEqual(tb.content.find('in3'), -1)
+
 
 if __name__ == '__main__':
     unittest.main()
