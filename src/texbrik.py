@@ -3,31 +3,55 @@
 from pathlib import Path
 import re
 
-PREREQS = re.compile(r'\\brikinsert{(?P<relativepath>[/_\w]+?)}')
+PREREQS = re.compile(r'\\prerequisite{(?P<relativepath>[/_\w]+?)}')
+BRIKINSERTS = re.compile(r'\\brikinsert{(?P<relativepath>[/_\w]+?)}')
 INCLS = re.compile(r'\\include{(\w+?)}')
 BRIKCONTENT = re.compile(r'\\begin{content}([\w\W]*?)\\end{content}')
  
 class Texbrik:
-    def __init__(self, prerequisites, includes, content, root_dir):
-        self.root_dir = root_dir
-        self.includes = set(includes)
-        self.content = content
-        self.prerequisites = dict([
-                (p, brikFromDoc(root_dir.joinpath(p).with_suffix('.brik'), self.root_dir))
-                for p in prerequisites
-            ])
-        self.expanded = False
+    def __init__(self, root_dir, relative_path, prerequisites, includes, content):
+        self.root_dir       = root_dir
+        self.relative_path  = relative_path
+        self.includes       = includes
+        self.content        = content
+        self.prerequisites  = prerequisites
+        self.brikinserts    = dict()
+        self.expanded       = False
+        self.processed_brix = set()
+        
+    def __eq__(self, other):
+        return self.relative_path == other.relative_path
 
-    def expand(self):
+    def expand(self, ignore={}):
         if self.expanded:
             return
+        self.brikinserts    = dict([
+            (b, brikFromDoc(self._relative_pathstring_to_path(b), self.root_dir))
+            for b in BRIKINSERTS.findall(self.content)
+        ])
+        self.content = BRIKINSERTS.sub(self._process_brikinsert_occurrence, self.content)
 
-        for p in self.prerequisites.values():
-            p.expand()
-            self.includes = self.includes.union(p.includes)
-        self.content = PREREQS.sub((lambda m: self.prerequisites[m[1]].expanded_content()), self.content)
+        s = ""
+        for p in self.prerequisites:
+            if p in self.processed_brix:
+                continue
+            b = brikFromDoc(self._relative_pathstring_to_path(p), self.root_dir)
+            b.expand(ignore = self.processed_brix)
+            self.processed_brix = self.processed_brix | b.processed_brix
+            s += b.content
 
+        self.content = s + self.content
         self.expanded = True
+
+    def _process_brikinsert_occurrence(self, match_object):
+        p = self.brikinserts[match_object[1]]
+        p.expand()
+        self.includes.append([i for i in p.includes if i not in self.includes])
+        self.processed_brix = self.processed_brix.union(p.processed_brix)
+        return p.content
+
+    def _relative_pathstring_to_path(self, relative_pathstring):
+        return self.root_dir.joinpath(relative_pathstring).with_suffix('.brik')
 
     def expanded_content(self):
         self.expand()
@@ -44,13 +68,14 @@ def brikFromDoc(path, root_dir):
 
     c = BRIKCONTENT.findall(s)
     if len(c) != 1:
-        raise InputError(pathstr, 'none or too many content blocks')
+        raise InputError(str(path), 'none or too many content blocks')
 
     return Texbrik(
+        root_dir        = root_dir,
+        relative_path   = path.relative_to(root_dir),
         prerequisites   = PREREQS.findall(s),
         includes        = INCLS.findall(s),
-        content         = c[0],
-        root_dir        = root_dir
+        content         = c[0]
     )
 
 class InputError(Exception):

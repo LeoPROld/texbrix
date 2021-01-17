@@ -1,9 +1,10 @@
 \include{amsmath}
 \include{amssymb}
+\prerequisite{dir3/testinput3}
+\prerequisite{testinput4}
 \begin{content}
  Some content with Backslashes
 	\begin{align*}
 		a=b+c
 	\end{align*}
- \brikinsert{dir3/testinput3}
 \end{content}
