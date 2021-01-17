@@ -1,3 +1,4 @@
+\include{somePackage}
 \begin{content}
     in4identifier
 \end{content}

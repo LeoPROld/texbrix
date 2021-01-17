@@ -1,5 +1,6 @@
 \include{amssymb}
 \begin{content}
+	\title{test of TeXBriX}
  Some content with Backslashes
 
  \brikinsert{testinput2}

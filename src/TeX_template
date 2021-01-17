@@ -1,0 +1,10 @@
+\documentclass[a4paper]{article}
+$includes
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+$content
+
+\end{document}
