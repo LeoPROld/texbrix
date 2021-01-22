@@ -6,24 +6,25 @@ import re
 
 PREREQS = re.compile(r'\\prerequisite{(?P<relativepath>[/_\w]+?)}')
 BRIKINSERTS = re.compile(r'\\brikinsert{(?P<relativepath>[/_\w]+?)}')
-INCLS = re.compile(r'\\include{(\w+?)}')
+PKGS = re.compile(r'\\usepackage{(\w+?)}')
 BRIKCONTENT = re.compile(r'\\begin{content}([\w\W]*?)\\end{content}')
  
 class Texbrik:
-    def __init__(self, root_dir, relative_path, prerequisites, includes, content):
+    def __init__(self, root_dir, relative_path, prerequisites, packages, content):
         self.root_dir       = root_dir
         self.relative_path  = relative_path
-        self.includes       = set(includes)
+        self.packages       = set(packages)
         self.content        = content
         self.prerequisites  = prerequisites
         self.brikinserts    = dict()
         self.expanded       = False
-        self.processed_brix = set()
+        self.ignore         = set()
         
     def __eq__(self, other):
         return self.relative_path == other.relative_path
 
-    def expand(self, ignore={}):
+    def expand(self, ignore=set()):
+        self.ignore |= ignore
         if self.expanded:
             return
         self.brikinserts    = dict([
@@ -34,23 +35,32 @@ class Texbrik:
 
         s = ""
         for p in self.prerequisites:
-            if p in self.processed_brix:
+            if p in self.ignore:
                 continue
-            b = brikFromDoc(self._relative_pathstring_to_path(p), self.root_dir)
-            b.expand(ignore = self.processed_brix)
-            self.processed_brix |= b.processed_brix
-            self.includes |= b.includes
+            try:
+                b = brikFromDoc(self._relative_pathstring_to_path(p), self.root_dir)
+            except InputError as e:
+                raise InputError(str(self.relative_path), 'Failed to proces prerequisite ' + p) from e
+            b.expand(ignore = self.ignore)
+            self.ignore |= b.ignore
+            self.ignore.add(p)
+            self.packages |= b.packages
             s += b.content
 
-        self.content = s + self.content
+        self.content = s \
+                + "\n%From TeXBriK [{relative_path}]\n".format(relative_path=str(self.relative_path)) \
+                + self.content \
+                + "\n%End of TeXBriK [{relative_path}]\n".format(relative_path=str(self.relative_path))
         self.expanded = True
 
     def _process_brikinsert_occurrence(self, match_object):
-        p = self.brikinserts[match_object[1]]
-        p.expand()
-        self.includes |= p.includes
-        self.processed_brix = self.processed_brix.union(p.processed_brix)
-        return p.content
+        p = match_object[1]
+        b = self.brikinserts[match_object[1]]
+        b.expand(ignore=self.ignore)
+        self.packages |= b.packages
+        self.ignore |= b.ignore
+        self.ignore.add(p)
+        return b.content
 
     def _relative_pathstring_to_path(self, relative_pathstring):
         return self.root_dir.joinpath(relative_pathstring).with_suffix('.brik')
@@ -59,12 +69,12 @@ class Texbrik:
         self.expand()
         return self.content
 
-    def make_TeX_file(self, template = Path(__file__).resolve().parent.joinpath('TeX_template')):
+    def make_TeX_file(self, template = Path(__file__).resolve().parent.joinpath('default_template')):
         self.expand()
         t = Template(template.read_text())
-        includes = '\n'.join(['\\include{{{}}}'.format(i) for i in self.includes])
+        packages = '\n'.join(['\\usepackage{{{}}}'.format(i) for i in self.packages])
         return t.substitute(
-            includes    = includes,
+            packages    = packages,
             content     = self.content
         )
 
@@ -85,7 +95,7 @@ def brikFromDoc(path, root_dir):
         root_dir        = root_dir,
         relative_path   = path.relative_to(root_dir),
         prerequisites   = PREREQS.findall(s),
-        includes        = INCLS.findall(s),
+        packages        = PKGS.findall(s),
         content         = c[0]
     )
 

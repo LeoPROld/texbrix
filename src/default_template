@@ -1,9 +1,7 @@
 \documentclass[a4paper]{article}
-$includes
+\usepackage{geometry}
+$packages
 \begin{document}
-\maketitle
-\tableofcontents
-\newpage
 
 $content
 
