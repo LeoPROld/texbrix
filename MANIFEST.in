@@ -1,0 +1,2 @@
+include texbrix/default_template.dat
+include *.dat

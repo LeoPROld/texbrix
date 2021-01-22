@@ -5,6 +5,15 @@ A granular approach to LaTeX
 
 Texbrix is a file standard that comes with useful tools for managing and exporting latex code
 
+Installation
+------------
+
+Download it from the testing PyPi:
+
+```shell
+pip install -i https://test.pypi.org/simple/ TeXBriX==0.1.0
+```
+
 Usage
 -----
 ### Command Line

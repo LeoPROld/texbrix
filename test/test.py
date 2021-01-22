@@ -1,12 +1,14 @@
 #!python3
 
+import texbrik
 import unittest
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent.joinpath('src')))
-import texbrik
 
-testdoc = Path(__file__).resolve().parent.joinpath('input_files/testinput1.brik')
+testdoc = Path(__file__).resolve().parent.joinpath(
+    'input_files/testinput1.brik')
+
 
 class TestTexBrik(unittest.TestCase):
 
@@ -36,4 +38,3 @@ class TestTexBrik(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
