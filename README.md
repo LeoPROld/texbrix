@@ -19,8 +19,8 @@ What are TexBriX?
 
 TeXBriX are intended to solve the following problem with ordinary LaTeX include:
 
-Say Document `a.tex` includes documents `b.tex` and `c.tex`, where the content of `d.tex` is a prerequisite for `c.tex`, as well as `b.tex`.
-Since you want the content of `b.tex` and `c.tex` to be useable on it's own, you incude `d.tex` in both of them. This results in the problem, that the content of `d.tex` is present twice in `a.tex`. TeXBriX makes all of those documents useable on their own while only importing prerequisites once, no matter whether they are used multiple times or not. (There is still a way to have content printed multiple times by explicitly placing it inside a document using \brikinsert).
+Say document `a.tex` includes documents `b.tex` and `c.tex`, where the content of `d.tex` is a prerequisite for `c.tex`, as well as `b.tex`.
+Since you want the content of `b.tex` and `c.tex` to be useable on their own, you incude `d.tex` in both of them. This results in the problem, that the content of `d.tex` is present twice in `a.tex`. TeXBriX makes all of those documents useable on their own while only importing prerequisites once, no matter whether they are used multiple times or not. (There is still a way to have content printed multiple times by explicitly placing it inside a document using \brikinsert).
 
 Using TeXBriX, you would write the content of `a`, `b`, `c` and `d` in files `a.brik`, `b.brik`, `c.brik` and `d.brik`, respectively using the syntax stated below. If you want your final documents to have a special appearance, or make some makros a prerequisite of all BriKs in your project, you would write your own `template` file. You can then generate a LaTeX excerpt of your project containing only the content you specify with it's prerequisites by calling `texbrix`.
 

@@ -6,5 +6,6 @@
 		a=b+c
 	\end{align*}
  this is input3 - found by test via:
-	in3
+	in3	
+ \brikinsert{testinput4}
 \end{content}
