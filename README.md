@@ -59,8 +59,8 @@ This is ordinary \LaTeX.
 
 ```
 
-Both the `\prerequisite{}` and the `\brikinsert{}` Commands take a file path relative to the top BriK's
-location (without the `.brik`-Postfix).
+Both the `\prerequisite{}` and the `\brikinsert{}` Commands take a file path relative to the BriK they are mentioned in, as well as absolute paths
+(without the `.brik` or `.mbrik`-Postfix).
 `\prerequisite{}` will make sure the mentioned BriK is included with all it's dependencies before the content, while
 not generating any duplicates.
 `\brikinsert{}` will insert the mentioned brik on the given position (with all not yet included dependencies) no matter whether
