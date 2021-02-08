@@ -1,6 +1,6 @@
 #!python3
 
-import texbrik
+from texbrix import texbrik
 import unittest
 import sys
 from pathlib import Path
@@ -12,26 +12,26 @@ testdoc = Path(__file__).resolve().parent.joinpath(
 
 class TestTexBrik(unittest.TestCase):
 
-    def test_includes(self):
-        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
-        self.assertEqual(['amssymb'], tb.includes)
+    def test_packages(self):
+        tb = texbrik.brikFromDoc(testdoc)
+        self.assertEqual(set(['amssymb']), tb.packages)
 
     def test_content(self):
-        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        tb = texbrik.brikFromDoc(testdoc)
         self.assertTrue(tb.content)
 
     def test_expand_brikinserts(self):
-        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        tb = texbrik.brikFromDoc(testdoc)
         tb.expand()
         self.assertIn('testinput2', tb.brikinserts.keys())
 
-    def test_expand_includes(self):
-        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+    def test_expand_packages(self):
+        tb = texbrik.brikFromDoc(testdoc)
         tb.expand()
-        self.assertNotEqual([i for i in tb.includes if i != 'amssymb'], {})
+        self.assertNotEqual([i for i in tb.packages if i != 'amssymb'], {})
 
     def test_expand_content(self):
-        tb = texbrik.brikFromDoc(testdoc, testdoc.parent)
+        tb = texbrik.brikFromDoc(testdoc)
         tb.expand()
         self.assertNotEqual(tb.content.find('in3'), -1)
 

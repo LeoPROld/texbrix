@@ -1,5 +1,5 @@
 #!python3
-from .texbrik import brikFromDoc
+from .lib.texbrik import brikFromDoc
 import argparse
 from pathlib import Path
 
@@ -16,7 +16,7 @@ parser.add_argument('-template', nargs=1)
 def main():
     args = parser.parse_args()
     p = Path(args.top_brik).resolve()
-    b = brikFromDoc(p, p.parent)
+    b = brikFromDoc(p)
     if args.template:
         s = b.make_TeX_file(template=Path(args.template[0]).resolve())
     else:
