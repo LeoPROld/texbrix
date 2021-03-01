@@ -39,6 +39,9 @@ template file instead (e.g. to define Math environments which should be expected
 pass it via the optional `-template` Flag.
 
 ### Brik Structure
+Currently there are two different types of Brix: Ordinary Brix and MathBrix
+#### Ordinary Brix
+Ordinary Brix are files with a `.brik` extension.
 A TeXBriK has the following basic structure:
 ```LaTeX
 \usepackage{<some LaTeX package required for this BriK's content>}
@@ -65,6 +68,19 @@ Both the `\prerequisite{}` and the `\brikinsert{}` Commands take a file path rel
 not generating any duplicates.
 `\brikinsert{}` will insert the mentioned brik on the given position (with all not yet included dependencies) no matter whether
 or not it has been previously used.
+
+#### Mathbrix
+Mathbrix are files with an `.mbrik` extension. They behave mostly like regular briks, with the exception that they can have multiple top-level `\begin{...} ... \end{...}` statements.
+These are intended to be used for *theorem*, *proof*, *definition*, etc. Blocks.
+
+##### Formulas
+In Mathbriks `\[ ... \]` Brackets will be automatically converted to `\begin{align*} ... \end{align*}` With future Anki flashcard exports, any table symbols like `&` and `\\` will be removed, while being included in LaTeX exports.
+
+##### (Future) Anki Flashcard export of MathBrix
+There will only work for Mathbrix with a restricted syntax. Forumlas will be converted as described above, a special syntax for lists is currently in the works.
+
+##### (Future) Anki Flashcard export of MathBrix
+There will only work for Mathbrix with a restricted syntax. Forumlas will be converted as described above, a special syntax for lists is currently in progress
 
 ### Template File
 You can write the general structure of your final LaTeX document in a template file (passed to TeXBriX via the `-template` argument).
