@@ -11,7 +11,7 @@ def read(fname):
 
 version = re.search(
         r'^__version__\s*=\s*"(.*)"',
-        open('texbrix/texbrix.py').read(),
+        open('texbrix/__init__.py').read(),
         re.M
         ).group(1)
 
@@ -21,7 +21,7 @@ setup(
     packages=["texbrix"],
     include_package_data=True,
     entry_points={
-        "console_scripts": ['texbrix=texbrix.texbrix:main']
+        "console_scripts": ['texbrix=texbrix:main']
     },
     author="Leopold Fajtak",
     author_email="leopold@fajtak.at",
