@@ -1,8 +1,9 @@
-from .texbrik.texbrik import brikFromDoc
+from . import texbrik
+from . import mathbrik
 import argparse
 from pathlib import Path
 
-__version__ = "0.2.2"
+__version__ = "0.2.6"
 parser = argparse.ArgumentParser(description='create LaTeX file from brix')
 parser.add_argument(
     'top_brik',
@@ -16,7 +17,7 @@ parser.add_argument('--version', action='version', version="%(prog)s {v}".format
 def main():
     args = parser.parse_args()
     p = Path(args.top_brik).resolve()
-    b = brikFromDoc(p)
+    b = texbrik.brikFromDoc(p)
     if args.template:
         s = b.make_TeX_file(template=Path(args.template[0]).resolve())
     else:

@@ -1,4 +1,4 @@
-from .texbrik import Texbrik, InputError
+from texbrix.texbrik import Texbrik, InputError
 from pathlib import Path
 import re
 
@@ -52,3 +52,4 @@ class Mathbrik(Texbrik):
     @staticmethod
     def _tex_formula_sub(match_object):
         return f'\\begin{{align}}\n{match_object[1]}\n\\end{{align}}'
+

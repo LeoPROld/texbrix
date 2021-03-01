@@ -2,7 +2,7 @@
 
 import re
 from pathlib import Path
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -11,15 +11,18 @@ def read(fname):
 
 version = re.search(
         r'^__version__\s*=\s*"(.*)"',
-        open('texbrix/__init__.py').read(),
+        open('src/texbrix/__init__.py').read(),
         re.M
         ).group(1)
 
 setup(
     name="TeXBriX",
     version=version,
-    packages=["texbrix"],
-    include_package_data=True,
+    packages=['texbrix'],
+    package_dir={"": "src"},
+    package_data={
+        "texbrix": ["*.dat"]
+    },
     entry_points={
         "console_scripts": ['texbrix=texbrix:main']
     },
