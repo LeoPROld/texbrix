@@ -1,6 +1,6 @@
 #!python3 -m
 
-from ..texbrix.texbrik import brikFromDoc
+from ..texbrik.texbrik import brikFromDoc
 import unittest
 import sys
 from pathlib import Path

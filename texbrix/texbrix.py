@@ -1,9 +1,9 @@
 #!python3
-from .lib.texbrik import brikFromDoc
+from .texbrik.texbrik import brikFromDoc
 import argparse
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 parser = argparse.ArgumentParser(description='create LaTeX file from brix')
 parser.add_argument(
     'top_brik',
