@@ -13,9 +13,9 @@ class Mathbrik(Texbrik):
 
         self.mathcontent = [m.groupdict() for m in mathcontent]
         content = '\n'.join(
-            [f'''\\begin{{{self._tex_format(m['type'])}}}'
-             {self._tex_format(m['cnt'])}
-             \\end{{{self._tex_format(m['type'])}}}'''
+            [f'\\begin{{{self._tex_format(m["type"])}}}'
+             f'\n{self._tex_format(m["cnt"])}'
+             f'\n\\end{{{self._tex_format(m["type"])}}}'
              for m in self.mathcontent])
 
         Texbrik.__init__(
