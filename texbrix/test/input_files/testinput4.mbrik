@@ -1,0 +1,12 @@
+\include{somePackage}
+\prerequisite{testinput1}
+\begin{thm}
+    Some theorem statement
+    \[
+        a formula & with align syntax \\
+        more of & it
+    \]
+\end{thm}
+\begin{proof}
+    proof.
+\end{proof}

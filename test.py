@@ -1,5 +1,5 @@
 #!python3
-from texbrix.tests import brik_tests
+from texbrix.test import brik_test
 import unittest
 
-unittest.main(brik_tests)
+unittest.main(brik_test)
