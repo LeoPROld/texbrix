@@ -1,6 +1,5 @@
-#!python3 -m
-
-from ..texbrik.texbrik import brikFromDoc
+#can not be executed directly. Execute top-level test.py instead
+from texbrix.texbrik import brikFromDoc
 import unittest
 import sys
 from pathlib import Path

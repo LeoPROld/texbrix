@@ -1,6 +1,7 @@
 from pathlib import Path
 from string import Template
 import re
+from importlib import resources
 
 
 class Texbrik:
@@ -111,10 +112,10 @@ class Texbrik:
         self.expand()
         return self.content
 
+    #TODO default template not found - look at how data is packaged with setuptools
     def make_TeX_file(
             self,
-            template: Path = Path(__file__).resolve().parent.joinpath(
-                'data/default_template.dat')) -> str:
+            template: Path = False) -> str:
         """Generates LaTeX File from this TeXBriK
 
         Args:
@@ -125,6 +126,10 @@ class Texbrik:
         Returns:
             str: LaTeX document's content
         """
+        if not template:
+            with resources.path(__package__, 'default_template.dat') as p:
+                template = p
+
         self.expand()
         t = Template(template.read_text())
         packages = '\n'.join([
@@ -184,7 +189,7 @@ def brikFromDoc(absolute_path: Path) -> Texbrik:
     if absolute_path.suffix == '.brik':
         return Texbrik.brikFromDoc(absolute_path)
     if absolute_path.suffix == '.mbrik':
-        from .mathbrik import Mathbrik
+        from texbrik.mathbrik import Mathbrik
         return Mathbrik.brikFromDoc(absolute_path)
     raise InputError(str(absolute_path),
                      'Document {d} not found'.format(
