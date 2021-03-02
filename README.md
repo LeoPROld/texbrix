@@ -73,15 +73,6 @@ or not it has been previously used.
 Mathbrix are files with an `.mbrik` extension. They behave mostly like regular briks, with the exception that they can have multiple top-level `\begin{...} ... \end{...}` statements.
 These are intended to be used for *theorem*, *proof*, *definition*, etc. Blocks.
 
-##### Formulas
-In Mathbriks `\[ ... \]` Brackets will be automatically converted to `\begin{align*} ... \end{align*}` With future Anki flashcard exports, any table symbols like `&` and `\\` will be removed, while being included in LaTeX exports.
-
-##### (Future) Anki Flashcard export of MathBrix
-There will only work for Mathbrix with a restricted syntax. Forumlas will be converted as described above, a special syntax for lists is currently in the works.
-
-##### (Future) Anki Flashcard export of MathBrix
-There will only work for Mathbrix with a restricted syntax. Forumlas will be converted as described above, a special syntax for lists is currently in progress
-
 ### Template File
 You can write the general structure of your final LaTeX document in a template file (passed to TeXBriX via the `-template` argument).
 Here you should use the following placeholders:
