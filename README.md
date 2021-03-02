@@ -11,7 +11,7 @@ Installation
 Download it from the testing PyPi:
 
 ```shell
-pip install -i https://test.pypi.org/simple/ TeXBriX==0.1.0
+pip install TeXBriX
 ```
 
 What are TexBriX?
