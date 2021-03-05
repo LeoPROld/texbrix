@@ -8,17 +8,25 @@ Texbrix is a file standard that comes with useful tools for managing and exporti
 Installation
 ------------
 
-Download it from the testing PyPi:
+Download it from PyPi:
 
 ```shell
 pip install TeXBriX
 ```
 
+TeXBriX uses Python 3.
+
 What are TexBriX?
 -----------------
 
-TeXBriX are intended to solve the following problem with ordinary LaTeX include:
+TeXBriX are intended as both a note taking and a document writing system. A Brik is a small text document which can contain references to other briks.
 
+### Intended Usecase
+Instead of writing all of your notes in a subject into a long `.tex` file, like many people do, you instead write a Brik for each note, containing all relevant references. If the time comes to export a result in a paper (or many results in a book), you write a top-level Brik
+referencing all results you want to include. TeXBriX then generates a `.tex` excerpt of your notes directory containing only the depencency tree of referenced Briks.
+
+
+### Why not just use LaTeX' input?
 Say document `a.tex` includes documents `b.tex` and `c.tex`, where the content of `d.tex` is a prerequisite for `c.tex`, as well as `b.tex`.
 Since you want the content of `b.tex` and `c.tex` to be useable on their own, you incude `d.tex` in both of them. This results in the problem, that the content of `d.tex` is present twice in `a.tex`. TeXBriX makes all of those documents useable on their own while only importing prerequisites once, no matter whether they are used multiple times or not. (There is still a way to have content printed multiple times by explicitly placing it inside a document using \brikinsert).
 
@@ -37,6 +45,8 @@ texbrix <top TeXBriK>
 This will by default use the `default_template` located in the src directory. If you would like to use another
 template file instead (e.g. to define Math environments which should be expected to work in all BriX),
 pass it via the optional `-template` Flag.
+
+It is recommended to simplify the compilation process using Makefiles.
 
 ### Brik Structure
 Currently there are two different types of Brix: Ordinary Brix and MathBrix
@@ -73,6 +83,8 @@ or not it has been previously used.
 Mathbrix are files with an `.mbrik` extension. They behave mostly like regular briks, with the exception that they can have multiple top-level `\begin{...} ... \end{...}` statements.
 These are intended to be used for *theorem*, *proof*, *definition*, etc. Blocks.
 
+In the future mathbriks will allow you to state theorems etc. without printing their proofs (e.g. for short excerpts).
+
 ### Template File
 You can write the general structure of your final LaTeX document in a template file (passed to TeXBriX via the `-template` argument).
 Here you should use the following placeholders:
@@ -90,7 +102,8 @@ Add to settings.json
 
 ```json
 "files.associations": {
-	"*.brik": "latex"
+	"*.brik": "latex",
+        "*.texbrik": "latex
 }
 ```
 If you use the `latex-workshop` extension:

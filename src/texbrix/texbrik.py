@@ -54,7 +54,7 @@ class Texbrik:
             ])
         except InputError as e:
             raise InputError(str(self.path),
-                             'Failed to process prerequisite ' + b) from e
+                             'Failed to process prerequisites.') from e
         self.content = __class__.BRIKINSERTS.sub(
             self._process_brikinsert_occurrence, self.content)
 
