@@ -189,7 +189,7 @@ def brikFromDoc(absolute_path: Path) -> Texbrik:
     if absolute_path.suffix == '.brik':
         return Texbrik.brikFromDoc(absolute_path)
     if absolute_path.suffix == '.mbrik':
-        from texbrik.mathbrik import Mathbrik
+        from texbrix.mathbrik import Mathbrik
         return Mathbrik.brikFromDoc(absolute_path)
     raise InputError(str(absolute_path),
                      'Document {d} not found'.format(

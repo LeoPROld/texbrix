@@ -3,9 +3,12 @@
 \begin{thm}
     Some theorem statement
     \[
-        a formula & with align syntax \\
-        more of & it
+        a formula
     \]
+    \begin{align*}
+        &some \\
+        align & stuff
+    \end{align*}
 \end{thm}
 \begin{proof}
     proof.

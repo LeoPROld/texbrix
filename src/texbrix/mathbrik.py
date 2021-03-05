@@ -13,9 +13,9 @@ class Mathbrik(Texbrik):
 
         self.mathcontent = [m.groupdict() for m in mathcontent]
         content = '\n'.join(
-            [f'\\begin{{{self._tex_format(m["type"])}}}'
-             f'\n{self._tex_format(m["cnt"])}'
-             f'\n\\end{{{self._tex_format(m["type"])}}}'
+            [f'\\begin{{{m["type"]}}}'
+             f'\n{m["cnt"]}'
+             f'\n\\end{{{m["type"]}}}'
              for m in self.mathcontent])
 
         Texbrik.__init__(
@@ -43,13 +43,3 @@ class Mathbrik(Texbrik):
             prerequisites=cls.PREREQS.findall(s),
             packages     =cls.PKGS.findall(s),
             mathcontent  =m)
-
-    @staticmethod
-    def _tex_format(s: str) -> str:
-        return re.compile(r'\\\[([\w\W]*)\\\]').sub(
-            Mathbrik._tex_formula_sub, s)
-
-    @staticmethod
-    def _tex_formula_sub(match_object):
-        return f'\\begin{{align}}\n{match_object[1]}\n\\end{{align}}'
-
