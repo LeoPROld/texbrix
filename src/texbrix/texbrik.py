@@ -73,7 +73,6 @@ class Texbrik:
         self.content = __class__.BRIKINSERTS.sub(
             self._process_brikinsert_occurrence, self.content)
         # since the error for _relative_pathstring_to_path has not been thrown for b[0], it will not make any problems here
-        print(self.ignore)
 
         s = ""
         for p in self.prerequisites:
