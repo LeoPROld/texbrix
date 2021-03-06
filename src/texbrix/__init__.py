@@ -3,7 +3,7 @@ from . import mathbrik
 import argparse
 from pathlib import Path
 
-__version__ = "0.2.9"
+__version__ = "0.2.10"
 parser = argparse.ArgumentParser(description='create LaTeX file from brix')
 parser.add_argument(
     'top_brik',

@@ -10,8 +10,19 @@ class Texbrik:
     PKGS = re.compile(r'\\include{(\w+?)}')
     BRIKCONTENT = re.compile(r'\\begin{content}([\w\W]*?)\\end{content}')
 
-    def __init__(self, absolute_path,
+    def __init__(self, absolute_path: Path,
                  prerequisites, packages, content):
+        """
+
+        Args:
+            absolute_path (Path): [description]
+            prerequisites ([str]): relative paths to prerequisite briks
+            packages ([str]): latex import packages
+            content (str): content of brik
+
+        Raises:
+            InputError: if imports of prerequisites etc. fail
+        """
         if not absolute_path.is_absolute():
             raise InputError(
                 str(absolute_path),
@@ -20,10 +31,14 @@ class Texbrik:
         self.path          = absolute_path
         self.packages      = set(packages)
         self.content       = content
-        self.prerequisites = prerequisites
+        try:
+            self.prerequisites = [self._relative_pathstring_to_path(p) for p in prerequisites]
+        except InputError as e:
+            raise InputError(str(self.path),
+                             'Failed to process prerequisites.') from e
         self.brikinserts   = dict()
         self.expanded      = False
-        self.ignore        = set()
+        self.ignore        = set() #set of absolute paths
 
     def __eq__(self, other) -> bool:
         return self.path == other.path \
@@ -57,17 +72,13 @@ class Texbrik:
                              'Failed to process prerequisites.') from e
         self.content = __class__.BRIKINSERTS.sub(
             self._process_brikinsert_occurrence, self.content)
+        # since the error for _relative_pathstring_to_path has not been thrown for b[0], it will not make any problems here
 
         s = ""
         for p in self.prerequisites:
             if p in self.ignore:
                 continue
-            try:
-                b = brikFromDoc(
-                    self._relative_pathstring_to_path(p))
-            except InputError as e:
-                raise InputError(str(self.path),
-                                 'Failed to proces prerequisite ' + p) from e
+            b = brikFromDoc(p)
             b.expand(ignore=self.ignore)
             self.ignore |= b.ignore
             self.ignore.add(p)
@@ -84,11 +95,11 @@ class Texbrik:
 
     def _process_brikinsert_occurrence(self, match_object):
         p = match_object[1]
-        b = self.brikinserts[match_object[1]]
+        b = self.brikinserts[p]
         b.expand(ignore=self.ignore)
         self.packages |= b.packages
         self.ignore |= b.ignore
-        self.ignore.add(p)
+        self.ignore.add(self._relative_pathstring_to_path(p))
         return b.content
 
     def _relative_pathstring_to_path(
